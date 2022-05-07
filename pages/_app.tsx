@@ -1,10 +1,20 @@
-import { GetServerSidePropsContext } from 'next';
-import { useState } from 'react';
-import { AppProps } from 'next/app';
-import { getCookie, setCookies } from 'cookies-next';
-import Head from 'next/head';
-import { MantineProvider, ColorScheme, ColorSchemeProvider } from '@mantine/core';
+import {
+  ActionIcon,
+  AppShell,
+  ColorScheme,
+  ColorSchemeProvider,
+  Group,
+  Header,
+  MantineProvider,
+} from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
+import { getCookie, setCookies } from 'cookies-next';
+import { GetServerSidePropsContext } from 'next';
+import { AppProps } from 'next/app';
+import Head from 'next/head';
+import React, { useState } from 'react';
+import { MoonStars, Sun } from 'tabler-icons-react';
+import DynamicBreadcrumbs from '../components/Navigation/DynamicBreadcrumbs';
 
 export default function App(props: AppProps & { colorScheme: ColorScheme }) {
   const { Component, pageProps } = props;
@@ -27,7 +37,31 @@ export default function App(props: AppProps & { colorScheme: ColorScheme }) {
       <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
         <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
           <NotificationsProvider>
-            <Component {...pageProps} />
+            <AppShell
+              sx={(theme) => ({
+                main: {
+                  background:
+                    theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
+                },
+              })}
+              navbarOffsetBreakpoint="sm"
+              asideOffsetBreakpoint="sm"
+              fixed
+              header={
+                <Header height={70} p="md">
+                  <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+                    <Group>
+                      <ActionIcon variant="default" onClick={() => toggleColorScheme()} size={30}>
+                        {colorScheme === 'dark' ? <Sun size={16} /> : <MoonStars size={16} />}
+                      </ActionIcon>
+                      <DynamicBreadcrumbs />
+                    </Group>
+                  </div>
+                </Header>
+              }
+            >
+              <Component {...pageProps} />
+            </AppShell>
           </NotificationsProvider>
         </MantineProvider>
       </ColorSchemeProvider>
