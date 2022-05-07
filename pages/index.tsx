@@ -18,7 +18,7 @@ function HomePage({ files }: ServerProps) {
     <Grid.Col
       span={4}
       sx={{
-        backgroundColor: theme.colors.dark[5],
+        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2],
       }}
       key={index}
     >
@@ -40,10 +40,12 @@ function HomePage({ files }: ServerProps) {
                 color: theme.colors.blue[7],
               },
               '&:visited': {
-                color: theme.colors.violet[2],
+                color:
+                  theme.colorScheme === 'dark' ? theme.colors.violet[2] : theme.colors.orange[5],
               },
               '&:visited&:hover': {
-                color: theme.colors.violet[5],
+                color:
+                  theme.colorScheme === 'dark' ? theme.colors.violet[5] : theme.colors.orange[7],
               },
             },
           }}

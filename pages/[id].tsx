@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next';
+import Head from 'next/head';
 import React, { useState } from 'react';
 import showdown from 'showdown';
 import RichText from '../components/RichText';
@@ -10,11 +11,22 @@ const converter = new showdown.Converter();
 
 interface ServerProps {
   content: string;
+  name?: string;
 }
 
-function MarkdownPage({ content }: ServerProps) {
+function MarkdownPage({ content, name }: ServerProps) {
   const [value, onChange] = useState(converter.makeHtml(Buffer.from(content, 'base64').toString()));
-  return <RichText value={value} onChange={onChange} readOnly />;
+  return (
+    <>
+      <Head>
+        <title>{name ?? 'Poetry'} - Adrian Gabardo</title>
+        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+        <link rel="shortcut icon" href="/favicon.svg" />
+      </Head>
+
+      <RichText value={value} onChange={onChange} readOnly />
+    </>
+  );
 }
 
 export const getServerSideProps: GetServerSideProps = async (
@@ -30,7 +42,7 @@ export const getServerSideProps: GetServerSideProps = async (
   const { login } = await getUser(octokit);
 
   // @ts-expect-error
-  const { content } = await getContent(octokit, {
+  const { content, name } = await getContent(octokit, {
     owner: login,
     repo,
     path: id,
@@ -39,7 +51,7 @@ export const getServerSideProps: GetServerSideProps = async (
 
   if (!content) throw new Error('Failed to retrieve content.');
 
-  return { props: { content } };
+  return { props: { content, name } };
 };
 
 export default MarkdownPage;
