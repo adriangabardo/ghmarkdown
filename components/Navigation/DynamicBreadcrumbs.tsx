@@ -31,7 +31,7 @@ export default function DynamicBreadcrumbs() {
 
   const crumbs = linkPath.reduce(pathToCrumb, [homeCrumb]).map((item, index) => (
     <Anchor href={item.href} key={index}>
-      {item.path}
+      {decodeURI(item.path)}
     </Anchor>
   ));
 
