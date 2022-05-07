@@ -1,20 +1,11 @@
-import {
-  ActionIcon,
-  AppShell,
-  ColorScheme,
-  ColorSchemeProvider,
-  Group,
-  Header,
-  MantineProvider,
-} from '@mantine/core';
+import { AppShell, ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
 import { getCookie, setCookies } from 'cookies-next';
 import { GetServerSidePropsContext } from 'next';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import React, { useState } from 'react';
-import { MoonStars, Sun } from 'tabler-icons-react';
-import DynamicBreadcrumbs from '../components/Navigation/DynamicBreadcrumbs';
+import Header from '../components/Navigation/Header';
 
 export default function App(props: AppProps & { colorScheme: ColorScheme }) {
   const { Component, pageProps } = props;
@@ -47,18 +38,7 @@ export default function App(props: AppProps & { colorScheme: ColorScheme }) {
               navbarOffsetBreakpoint="sm"
               asideOffsetBreakpoint="sm"
               fixed
-              header={
-                <Header height={70} p="md">
-                  <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                    <Group>
-                      <ActionIcon variant="default" onClick={() => toggleColorScheme()} size={30}>
-                        {colorScheme === 'dark' ? <Sun size={16} /> : <MoonStars size={16} />}
-                      </ActionIcon>
-                      <DynamicBreadcrumbs />
-                    </Group>
-                  </div>
-                </Header>
-              }
+              header={<Header colorScheme={colorScheme} {...pageProps} />}
             >
               <Component {...pageProps} />
             </AppShell>
