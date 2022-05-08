@@ -19,7 +19,7 @@ function HomePage({ files }: ServerProps) {
 
   const getTotalPages = (f: MarkdownFile[], pp: number) => Math.max(Math.ceil(f.length / pp), 1);
 
-  const [perPage, setPerPage] = useState(files.length);
+  const [perPage, setPerPage] = useState(Math.min(files.length, 20));
   const [activePage, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(getTotalPages(files, perPage));
   const [selectedFiles, setSelectedFiles] = useState(files.slice(0, perPage));
