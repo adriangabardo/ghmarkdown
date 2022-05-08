@@ -46,7 +46,7 @@ function HomePage({ files }: ServerProps) {
           </Text>
         </Group>
 
-        <Text size="sm" style={{ color: theme.colors.dark[4], lineHeight: 1.5 }}>
+        <Text size="sm" style={{ lineHeight: 1.5 }}>
           With Fjord Tours you can explore more of the magical fjord landscapes with tours and
           activities on and around the fjords of Norway
         </Text>
