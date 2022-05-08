@@ -39,8 +39,8 @@ export interface MarkdownFile {
   path: string;
   sha: string;
   url: string;
-  description?: string;
-  image?: string;
+  description: string | null;
+  image: string | null;
 }
 
 export const extractMarkdownFromContent = (
@@ -49,18 +49,28 @@ export const extractMarkdownFromContent = (
 ): MarkdownFile[] => {
   const isContentArray = (obj: Content | Content[]): obj is Content[] => Array.isArray(obj);
 
+  const findMetadata = (name: string): { description: string | null; image: string | null } => {
+    const found = metadata.find((entry) => entry.id === name);
+    if (!found) return { description: null, image: null };
+
+    return { description: found.description || null, image: found.image || null };
+  };
+
   if (!isContentArray(content)) {
     if (content.type !== 'file') throw new Error('Invalid content.');
 
-    return [{ name: content.name, path: content.path, sha: content.sha, url: content.url }];
+    const entryMetadata = findMetadata(content.name);
+
+    return [
+      {
+        name: content.name,
+        path: content.path,
+        sha: content.sha,
+        url: content.url,
+        ...entryMetadata,
+      },
+    ];
   }
-
-  const findMetadata = (name: string): Omit<Metadata, 'id'> | undefined => {
-    const found = metadata.find((entry) => entry.id === name);
-    if (!found) return undefined;
-
-    return { description: found.description, image: found.image };
-  };
 
   return content
     .filter((entry) => entry.type === 'file' && entry.name.match(/(.)+(\.md){1}$/))
