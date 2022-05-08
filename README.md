@@ -22,6 +22,11 @@ REPOSITORY=
 - PAT - [GitHub Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) - **DO NOT COMMIT TO REPOSITORY**
 - REPOSITORY - Which repository linked to the same account as the above's PAT will we fetch Markdown files from (the repository can be private)
 
+The PAT needs the following scoped permissions:
+
+- repo:\*
+- read:user
+
 #### Starting the environment
 
 ```bash
