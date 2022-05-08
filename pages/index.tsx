@@ -1,4 +1,5 @@
-import { Container, Grid, useMantineTheme } from '@mantine/core';
+import React, { useState, useEffect } from 'react';
+import { Container, Grid, useMantineTheme, Pagination } from '@mantine/core';
 import FileGridCol from '../components/FileGridCol';
 import { extractMarkdownFromContent, MarkdownFile } from '../util/extractMarkdownFromContent';
 import { octokit } from '../util/octokit';
@@ -9,12 +10,32 @@ interface ServerProps {
   files: MarkdownFile[];
 }
 
+const PER_PAGE = 10;
+
 function HomePage({ files }: ServerProps) {
   const theme = useMantineTheme();
 
   if (!files || files.length <= 0) return <>Loading...</>;
 
-  const items = files.map((file, index) => <FileGridCol file={file} key={index} />);
+  const getTotalPages = () => Math.max(Math.round(files.length / PER_PAGE), 1);
+
+  const [activePage, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(getTotalPages());
+  const [selectedFiles, setSelectedFiles] = useState(files.slice(0, PER_PAGE));
+
+  const filesToGridCol = (f: MarkdownFile[]) =>
+    f.map((file, index) => <FileGridCol file={file} key={index} />);
+
+  useEffect(() => {
+    setPage(1);
+    setTotalPages(getTotalPages());
+    setSelectedFiles(files.slice(0, PER_PAGE));
+  }, [files]);
+
+  useEffect(() => {
+    const startingPoint = Math.max(0, activePage - 1) * PER_PAGE;
+    setSelectedFiles(files.slice(startingPoint, startingPoint + PER_PAGE));
+  }, [activePage]);
 
   return (
     <Container px="sm" py="xl">
@@ -25,8 +46,15 @@ function HomePage({ files }: ServerProps) {
           gap: theme.spacing.sm,
         }}
       >
-        {items}
+        {filesToGridCol(selectedFiles)}
       </Grid>
+      <Pagination
+        page={activePage}
+        onChange={setPage}
+        total={totalPages}
+        initialPage={1}
+        my={theme.spacing.lg}
+      />
     </Container>
   );
 }
