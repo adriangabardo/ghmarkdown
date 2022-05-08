@@ -31,7 +31,7 @@ export default function FileGridCol({ file }: { file: MarkdownFile }) {
 
         <Group position="apart" style={{ marginBottom: 5, marginTop: theme.spacing.sm }}>
           <Text weight={500} sx={{ textTransform: 'capitalize' }}>
-            {file.name.replace('.md', '')}
+            {file.name.replace('.md', '').toLowerCase()}
           </Text>
         </Group>
 

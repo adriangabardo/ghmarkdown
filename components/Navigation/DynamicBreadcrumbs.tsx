@@ -30,8 +30,8 @@ export default function DynamicBreadcrumbs() {
   const linkPath = router.asPath.split('/').filter((path) => path !== '');
 
   const crumbs = linkPath.reduce(pathToCrumb, [homeCrumb]).map((item, index) => (
-    <Anchor href={item.href} key={index}>
-      {decodeURI(item.path)}
+    <Anchor href={item.href} key={index} sx={{ textTransform: 'capitalize' }}>
+      {decodeURI(item.path).replace('.md', '').toLowerCase()}
     </Anchor>
   ));
 
