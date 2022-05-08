@@ -16,14 +16,25 @@ export default function FileGridCol({ file }: { file: MarkdownFile }) {
 
   return (
     <Grid.Col md={3} lg={4}>
-      <Card shadow="sm" p="lg" sx={{ height: '100%' }}>
+      <Card shadow="sm" p="lg" sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <Card.Section component="a" href={`/${encodeURI(file.path)}`}>
           <AspectRatio ratio={16 / 9} mx="auto">
-            <Image src={file.image ?? 'https://source.unsplash.com/random'} alt="Norway" />
+            <Image
+              src={file.image ?? 'https://source.unsplash.com/random'}
+              alt={file.name}
+              sx={{ '&:hover': { opacity: 0.8 } }}
+            />
           </AspectRatio>
         </Card.Section>
 
-        <Group position="apart" style={{ marginBottom: 5, marginTop: theme.spacing.sm }}>
+        <Group
+          position="apart"
+          style={{
+            marginBottom: 5,
+            marginTop: theme.spacing.sm,
+            ...(file.description ? {} : { flexGrow: 1 }),
+          }}
+        >
           <Text weight={500} sx={{ textTransform: 'capitalize' }}>
             {file.name.replace('.md', '').toLowerCase()}
           </Text>

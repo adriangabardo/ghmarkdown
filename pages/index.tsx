@@ -1,42 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Grid, useMantineTheme, Pagination } from '@mantine/core';
+import { Container, Grid, NumberInput, Pagination, useMantineTheme } from '@mantine/core';
+import React, { useEffect, useState } from 'react';
 import FileGridCol from '../components/FileGridCol';
 import { extractMarkdownFromContent, MarkdownFile } from '../util/extractMarkdownFromContent';
+import { extractMetadata } from '../util/extractMetadata';
 import { octokit } from '../util/octokit';
 import { getContent } from '../util/octokit/content';
 import { getUser } from '../util/octokit/user';
-import { extractMetadata } from '../util/extractMetadata';
 
 interface ServerProps {
   files: MarkdownFile[];
 }
-
-const PER_PAGE = 10;
 
 function HomePage({ files }: ServerProps) {
   const theme = useMantineTheme();
 
   if (!files || files.length <= 0) return <>Loading...</>;
 
-  const getTotalPages = () => Math.max(Math.round(files.length / PER_PAGE), 1);
+  const getTotalPages = (f: MarkdownFile[], pp: number) => Math.max(Math.ceil(f.length / pp), 1);
 
+  const [perPage, setPerPage] = useState(files.length);
   const [activePage, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(getTotalPages());
-  const [selectedFiles, setSelectedFiles] = useState(files.slice(0, PER_PAGE));
+  const [totalPages, setTotalPages] = useState(getTotalPages(files, perPage));
+  const [selectedFiles, setSelectedFiles] = useState(files.slice(0, perPage));
 
   const filesToGridCol = (f: MarkdownFile[]) =>
     f.map((file, index) => <FileGridCol file={file} key={index} />);
 
   useEffect(() => {
     setPage(1);
-    setTotalPages(getTotalPages());
-    setSelectedFiles(files.slice(0, PER_PAGE));
+    setTotalPages(getTotalPages(files, perPage));
+    setSelectedFiles(files.slice(0, perPage));
   }, [files]);
 
   useEffect(() => {
-    const startingPoint = Math.max(0, activePage - 1) * PER_PAGE;
-    setSelectedFiles(files.slice(startingPoint, startingPoint + PER_PAGE));
-  }, [activePage]);
+    setTotalPages(getTotalPages(files, perPage));
+    const startingPoint = Math.max(0, activePage - 1) * perPage;
+    setSelectedFiles(files.slice(startingPoint, startingPoint + perPage));
+  }, [activePage, perPage]);
 
   return (
     <Container px="sm" py="xl">
@@ -49,13 +49,27 @@ function HomePage({ files }: ServerProps) {
       >
         {filesToGridCol(selectedFiles)}
       </Grid>
-      <Pagination
-        page={activePage}
-        onChange={setPage}
-        total={totalPages}
-        initialPage={1}
-        my={theme.spacing.lg}
-      />
+      <Container my={theme.spacing.lg} mx={0} p={0} sx={{ display: 'flex', flexDirection: 'row' }}>
+        <Pagination
+          page={activePage}
+          onChange={setPage}
+          total={totalPages}
+          initialPage={1}
+          m={0}
+          p={0}
+          sx={{ alignItems: 'end' }}
+        />
+        <NumberInput
+          label="Items per page"
+          value={perPage}
+          onChange={(val) => {
+            if (val) setPerPage(val);
+          }}
+          min={1}
+          max={Math.min(files.length, 50)}
+          sx={{ marginLeft: 'auto' }}
+        />
+      </Container>
     </Container>
   );
 }
