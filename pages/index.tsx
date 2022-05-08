@@ -1,5 +1,6 @@
 import { Container, Grid, NumberInput, Pagination, useMantineTheme } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
+import { Numbers } from 'tabler-icons-react';
 import FileGridCol from '../components/FileGridCol';
 import { extractMarkdownFromContent, MarkdownFile } from '../util/extractMarkdownFromContent';
 import { extractMetadata } from '../util/extractMetadata';
@@ -65,6 +66,7 @@ function HomePage({ files }: ServerProps) {
           onChange={(val) => {
             if (val) setPerPage(val);
           }}
+          icon={<Numbers />}
           min={1}
           max={Math.min(files.length, 50)}
           sx={{ marginLeft: 'auto' }}
