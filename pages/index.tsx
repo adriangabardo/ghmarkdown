@@ -70,6 +70,7 @@ function HomePage({ files }: ServerProps) {
           min={1}
           max={Math.min(files.length, 50)}
           sx={{ marginLeft: 'auto' }}
+          size="xs"
         />
       </Container>
     </Container>
