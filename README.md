@@ -1,39 +1,36 @@
-# Mantine Next Template
+# GitHub Markdown Webpage Renderer
 
-Get started with Mantine + Next with just a few button clicks.
-Click `Use this template` button at the header of repository or [follow this link](https://github.com/mantinedev/mantine-next-template/generate) and
-create new repository with `@mantine` packages. Note that you have to be logged in to GitHub to generate template.
+## Overview
 
-## Features
+This project leverages [Octokit.js](https://github.com/octokit/octokit.js/), Mantine's [Rich Text Editor](https://mantine.dev/others/rte/) and [Showdown.JS](https://github.com/showdownjs/showdown)'s HTML→Markdown converter to create a website that reads through any of a user's Github Repositories (including private ones) and serves all their Markdown files in the root directory of said repository.
 
-This template comes with several essential features:
+## Getting started
 
-- Server side rendering setup for Mantine
-- Color scheme is stored in cookie to avoid color scheme mismatch after hydration
-- Storybook with color scheme toggle
-- Jest with react testing library
-- ESLint setup with [eslint-config-mantine](https://github.com/mantinedev/eslint-config-mantine)
+The first step is likely to be forking this repository for your own usage. Then:
 
-## npm scripts
+### Starting in development
 
-### Build and dev scripts
+#### Environment Variables
 
-- `dev` – start dev server
-- `build` – bundle application for production
-- `export` – exports static website to `out` folder
-- `analyze` – analyzes application bundle with [@next/bundle-analyzer](https://www.npmjs.com/package/@next/bundle-analyzer)
+Create a `.env.local` file in the root of the repository, in said file you need the following:
 
-### Testing scripts
+```env
+PAT=
+REPOSITORY=
+```
 
-- `typecheck` – checks TypeScript types
-- `lint` – runs ESLint
-- `prettier:check` – checks files with Prettier
-- `jest` – runs jest tests
-- `jest:watch` – starts jest watch
-- `test` – runs `jest`, `prettier:check`, `lint` and `typecheck` scripts
+- PAT - [GitHub Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) - **DO NOT COMMIT TO REPOSITORY**
+- REPOSITORY - Which repository linked to the same account as the above's PAT will we fetch Markdown files from (the repository can be private)
 
-### Other scripts
+#### Starting the environment
 
-- `storybook` – starts storybook dev server
-- `storybook:build` – build production storybook bundle to `storybook-static`
-- `prettier:write` – formats all files with Prettier
+```bash
+yarn # or npm i
+yarn dev # or npm run dev
+```
+
+## Deployment
+
+This is a Next.JS application, deploying to Vercel's environment is the easiest way to get it served. Follow their instructions on https://vercel.com/solutions/nextjs.
+
+The only extra step to follow is to set your environment variables on deployment just like the above `.env.local`.
