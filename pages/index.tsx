@@ -1,4 +1,14 @@
-import { Button, Container, Grid, Text, Title, useMantineTheme } from '@mantine/core';
+import {
+  Button,
+  Card,
+  Container,
+  Grid,
+  Group,
+  Image,
+  Text,
+  useMantineTheme,
+  AspectRatio,
+} from '@mantine/core';
 import { Book } from 'tabler-icons-react';
 import { extractMarkdownFromContent, MarkdownFile } from '../util/extractMarkdownFromContent';
 import { octokit } from '../util/octokit';
@@ -16,43 +26,43 @@ function HomePage({ files }: ServerProps) {
 
   const items = files.map((file, index) => (
     <Grid.Col
-      span={4}
+      md={3}
+      lg={4}
       sx={{
         backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2],
       }}
       key={index}
     >
-      <Container fluid>
-        <Title order={3}>{file.name}</Title>
-        <Text>Some super cool description of some sort...</Text>
+      <Card shadow="sm" p="lg">
+        <Card.Section component="a" href={`/${encodeURI(file.path)}`}>
+          <AspectRatio ratio={16 / 9} mx="auto">
+            <Image src="https://source.unsplash.com/random" alt="Norway" key={index} />
+          </AspectRatio>
+        </Card.Section>
+
+        <Group position="apart" style={{ marginBottom: 5, marginTop: theme.spacing.sm }}>
+          <Text weight={500} sx={{ textTransform: 'capitalize' }}>
+            {file.name.replace('.md', '')}
+          </Text>
+        </Group>
+
+        <Text size="sm" style={{ color: theme.colors.dark[4], lineHeight: 1.5 }}>
+          With Fjord Tours you can explore more of the magical fjord landscapes with tours and
+          activities on and around the fjords of Norway
+        </Text>
+
         <Button
+          variant="light"
+          color="blue"
+          fullWidth
+          style={{ marginTop: 14 }}
           component="a"
-          href={`/${encodeURI(file.path)}`}
-          variant="outline"
           leftIcon={<Book size={14} />}
-          size="sm"
-          p={0}
-          styles={{
-            root: {
-              border: 0,
-              '&:hover': {
-                backgroundColor: 'transparent',
-                color: theme.colors.blue[7],
-              },
-              '&:visited': {
-                color:
-                  theme.colorScheme === 'dark' ? theme.colors.violet[2] : theme.colors.orange[5],
-              },
-              '&:visited&:hover': {
-                color:
-                  theme.colorScheme === 'dark' ? theme.colors.violet[5] : theme.colors.orange[7],
-              },
-            },
-          }}
+          href={`/${encodeURI(file.path)}`}
         >
-          <Text>Read more</Text>
+          Read More
         </Button>
-      </Container>
+      </Card>
     </Grid.Col>
   ));
 
