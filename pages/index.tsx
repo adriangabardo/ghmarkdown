@@ -5,6 +5,7 @@ import { extractMarkdownFromContent, MarkdownFile } from '../util/extractMarkdow
 import { octokit } from '../util/octokit';
 import { getContent } from '../util/octokit/content';
 import { getUser } from '../util/octokit/user';
+import { extractMetadata } from '../util/extractMetadata';
 
 interface ServerProps {
   files: MarkdownFile[];
@@ -64,9 +65,20 @@ export async function getServerSideProps(): Promise<{ props: ServerProps }> {
   if (!repo) throw new Error('Missing repository.');
 
   const { login } = await getUser(octokit);
+
+  const metadataContent = await getContent(octokit, {
+    owner: login,
+    repo,
+    path: 'metadata.json',
+    mediaType: { format: 'application/vnd.github.VERSION.raw' },
+  });
+
   const content = await getContent(octokit, { owner: login, repo });
 
-  const extracted = extractMarkdownFromContent(content);
+  // @ts-expect-error
+  const metadata = extractMetadata(metadataContent.content);
+
+  const extracted = extractMarkdownFromContent(content, metadata);
 
   return { props: { files: extracted } };
 }

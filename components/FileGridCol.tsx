@@ -15,17 +15,11 @@ export default function FileGridCol({ file }: { file: MarkdownFile }) {
   const theme = useMantineTheme();
 
   return (
-    <Grid.Col
-      md={3}
-      lg={4}
-      sx={{
-        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2],
-      }}
-    >
-      <Card shadow="sm" p="lg">
+    <Grid.Col md={3} lg={4}>
+      <Card shadow="sm" p="lg" sx={{ height: '100%' }}>
         <Card.Section component="a" href={`/${encodeURI(file.path)}`}>
           <AspectRatio ratio={16 / 9} mx="auto">
-            <Image src="https://source.unsplash.com/random" alt="Norway" />
+            <Image src={file.image ?? 'https://source.unsplash.com/random'} alt="Norway" />
           </AspectRatio>
         </Card.Section>
 
@@ -35,10 +29,11 @@ export default function FileGridCol({ file }: { file: MarkdownFile }) {
           </Text>
         </Group>
 
-        <Text size="sm" style={{ lineHeight: 1.5 }}>
-          With Fjord Tours you can explore more of the magical fjord landscapes with tours and
-          activities on and around the fjords of Norway
-        </Text>
+        {file.description ? (
+          <Text size="sm" style={{ lineHeight: 1.5 }}>
+            {file.description}
+          </Text>
+        ) : null}
 
         <Button
           variant="light"

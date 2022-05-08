@@ -15,6 +15,8 @@
 //     }
 //   }
 
+import { Metadata } from './extractMetadata';
+
 interface Content {
   name: string;
   path: string;
@@ -37,9 +39,14 @@ export interface MarkdownFile {
   path: string;
   sha: string;
   url: string;
+  description?: string;
+  image?: string;
 }
 
-export const extractMarkdownFromContent = (content: Content | Content[]): MarkdownFile[] => {
+export const extractMarkdownFromContent = (
+  content: Content | Content[],
+  metadata: Metadata[]
+): MarkdownFile[] => {
   const isContentArray = (obj: Content | Content[]): obj is Content[] => Array.isArray(obj);
 
   if (!isContentArray(content)) {
@@ -48,12 +55,24 @@ export const extractMarkdownFromContent = (content: Content | Content[]): Markdo
     return [{ name: content.name, path: content.path, sha: content.sha, url: content.url }];
   }
 
+  const findMetadata = (name: string): Omit<Metadata, 'id'> | undefined => {
+    const found = metadata.find((entry) => entry.id === name);
+    if (!found) return undefined;
+
+    return { description: found.description, image: found.image };
+  };
+
   return content
     .filter((entry) => entry.type === 'file' && entry.name.match(/(.)+(\.md){1}$/))
-    .map((entry) => ({
-      name: entry.name,
-      path: entry.path,
-      sha: entry.sha,
-      url: entry.url,
-    }));
+    .map((entry) => {
+      const entryMetadata = findMetadata(entry.name);
+
+      return {
+        name: entry.name,
+        path: entry.path,
+        sha: entry.sha,
+        url: entry.url,
+        ...entryMetadata,
+      };
+    });
 };
